@@ -17,7 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CategoryBrowseActivity"/>
+        <activity android:name=".CategoryBrowseActivity"  android:theme="@style/BrowseAppTheme" />
         <activity
             android:name="com.box.box_preview_sample.CustomBrowseFileActivity"
             android:label="@string/box_browsesdk_title"

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 
 import com.box.androidsdk.browse.fragments.BoxBrowseFragment;
 import com.box.androidsdk.content.models.BoxFolder;
@@ -12,7 +11,7 @@ import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSession;
 
 
-public class CategoryBrowseActivity extends AppCompatActivity implements BoxBrowseFragment.OnFragmentInteractionListener {
+public class CategoryBrowseActivity extends NavigationDrawerActivity implements BoxBrowseFragment.OnFragmentInteractionListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
