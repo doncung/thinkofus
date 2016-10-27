@@ -3,12 +3,13 @@ package com.box.box_preview_sample;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.box.androidsdk.browse.activities.BoxBrowseFileActivity;
 import com.box.androidsdk.content.BoxConfig;
+import com.box.androidsdk.content.BoxConstants;
 import com.box.androidsdk.content.auth.BoxAuthentication;
 import com.box.androidsdk.content.models.BoxFile;
 import com.box.androidsdk.content.models.BoxFolder;
@@ -39,11 +40,11 @@ public class MainActivity extends AppCompatActivity implements BoxAuthentication
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BoxConfig.IS_LOG_ENABLED = true;
-        BoxConfig.CLIENT_ID = "<YOUR_CLIENT_ID>";
-        BoxConfig.CLIENT_SECRET = "<YOUR_CLIENT_SECRET>";
+        BoxConfig.CLIENT_ID = "186mddjxxv7vlyjxli70ur0tmdpkdgsi";
+        BoxConfig.CLIENT_SECRET = "psi8wEOuP5s9lDtfoKOUDvchjNcjxaFX";
 
         // needs to match redirect uri in developer settings if set.
-//        BoxConfig.REDIRECT_URL = "<YOUR_REDIRECT_URI>";
+        BoxConfig.REDIRECT_URL = "https://app.box.com/static/sync_redirect.html";
 
         if (savedInstanceState != null) {
             mPathToRoot = (BoxList<BoxFolder>) savedInstanceState.getSerializable(PATH_TO_ROOT);
@@ -71,7 +72,9 @@ public class MainActivity extends AppCompatActivity implements BoxAuthentication
      * @param folder BoxFolder to browse
      */
     private void browseFolder(BoxFolder folder) {
-        startActivityForResult(CustomBrowseFileActivity.
+        startActivityForResult(TextUtils.equals(folder.getId(), BoxConstants.ROOT_FOLDER_ID) ?
+                CategoryBrowseActivity.getLaunchIntent(this, mSession) :
+                CustomBrowseFileActivity.
                         getLaunchIntent(MainActivity.this, folder, mSession),
                 BROWSE_FILE_REQUEST_CODE);
     }
