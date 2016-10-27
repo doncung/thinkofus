@@ -199,10 +199,7 @@ public class CategoryBrowseFragment  extends Fragment implements SwipeRefreshLay
 
 
         if (mBoxListItems != null) {
-            mAdapter = new BoxItemAdapter();
-
-            mAdapter.addAll(mBoxListItems);
-            mItemsView.setAdapter(mAdapter);
+            setListItem(mBoxListItems);
             displayBoxList(mBoxListItems);
         }
         return rootView;
@@ -440,7 +437,7 @@ public class CategoryBrowseFragment  extends Fragment implements SwipeRefreshLay
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             View view = (convertView == null) ? LayoutInflater.from(CategoryBrowseFragment
                     .this.getContext()).inflate(R.layout.category_list_item, parent, false) : convertView;
             String categoryName =  mBoxListItems.get(position).getName();
@@ -451,6 +448,16 @@ public class CategoryBrowseFragment  extends Fragment implements SwipeRefreshLay
                     break;
                 }
             }
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BoxItem item = ((BoxListItem) getItem(position)).getBoxItem();
+                    if (item != null) {
+                        CategoryBrowseFragment.this.mListener.handleOnItemClick(item);
+                    }
+
+                }
+            });
             return view;
         }
 
