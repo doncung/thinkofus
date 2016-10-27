@@ -1,6 +1,7 @@
 package com.box.box_preview_sample;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 import com.box.androidsdk.browse.activities.BoxBrowseFileActivity;
 import com.box.androidsdk.content.BoxConfig;
 import com.box.androidsdk.content.BoxConstants;
+import com.box.androidsdk.content.BoxException;
 import com.box.androidsdk.content.auth.BoxAuthentication;
 import com.box.androidsdk.content.models.BoxFile;
 import com.box.androidsdk.content.models.BoxFolder;
@@ -134,11 +136,29 @@ public class MainActivity extends AppCompatActivity implements BoxAuthentication
         }
     }
 
+    BoxAuthentication.AuthenticationRefreshProvider mRefreshProvider;
     /**
      * Authenticate using the box sdk.
      */
     private void initialize(boolean showUserPicker) {
-        mSession = showUserPicker ? new BoxSession(this, null) : new BoxSession(this);
+        final Context applicationContext = getApplicationContext();
+        mRefreshProvider = new BoxAuthentication.AuthenticationRefreshProvider() {
+            @Override
+            public BoxAuthentication.BoxAuthenticationInfo refreshAuthenticationInfo(BoxAuthentication.BoxAuthenticationInfo info) throws BoxException {
+
+                return info;
+            }
+
+            @Override
+            public boolean launchAuthUi(String userId, BoxSession session) {
+                startActivity(new Intent(applicationContext, LoginActivity.class));
+                return true;
+            }
+        };
+        mSession = new BoxSession(this, "", mRefreshProvider);
+
+
+//        mSession = showUserPicker ? new BoxSession(this, null) : new BoxSession(this);
         mSession.setSessionAuthListener(this);
         mSession.authenticate();
     }

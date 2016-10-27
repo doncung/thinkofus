@@ -263,7 +263,7 @@ public class CategoryBrowseFragment  extends Fragment implements SwipeRefreshLay
      */
     protected void displayBoxList(final BoxListItems items) {
         FragmentActivity activity = getActivity();
-        if (activity == null) {
+        if (activity == null || items == null) {
             return;
         }
         if (items.isEmpty()) {

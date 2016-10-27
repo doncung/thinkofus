@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -150,7 +151,8 @@ public class CustomBrowseFileActivity extends BoxBrowseFileActivity {
         builder.setTitle("Upload file?");
         final EditText editText = new EditText(this);
         builder.setView(editText);
-        editText.setText(file.getName());
+        editText.setText("health_2.jpg");
+        editText.setGravity(Gravity.CENTER_HORIZONTAL);
         builder.setMessage("Upload file with given name? ");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:layout_height="match_parent">
+<ImageView
+    android:id="@+id/lockicon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/lock"
+    android:layout_marginTop="60dp"
+
+    android:layout_centerHorizontal="true"
+    />
+<EditText
+    android:layout_below="@+id/lockicon"
+    android:layout_width="match_parent"
+    android:layout_height="42dp"
+    android:id="@+id/login"
+    android:hint="email"
+    android:gravity="center"
+    android:text="box@gmail.com"
+    android:background="@drawable/edit_border"
+    android:textColor="#000000"
+    android:layout_marginBottom="14dp"
+
+    android:layout_marginLeft="60dp"
+    android:layout_marginRight="60dp"/>
+<EditText
+    android:layout_below="@+id/login"
+    android:layout_width="match_parent"
+    android:layout_height="42dp"
+    android:id="@+id/password"
+    android:gravity="center"
+
+    android:hint="password"
+    android:layout_marginBottom="14dp"
+
+    android:text="Test123!"
+    android:textColor="#000000"
+    android:inputType="textPassword"
+    android:background="@drawable/edit_border"
+
+    android:layout_marginLeft="60dp"
+    android:layout_marginRight="60dp"/>
+
+    <Button
+        android:layout_below="@+id/password"
+        android:id="@+id/submit"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@drawable/bluebutton"
+        android:textColor="@color/colorWhite"
+        android:text="Log In"
+        />
+
+    <ImageView
+android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:src="@drawable/tou_logo"/>
+
+</RelativeLayout>
+
+
