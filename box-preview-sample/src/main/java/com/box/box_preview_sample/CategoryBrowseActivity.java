@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.box.androidsdk.browse.fragments.BoxBrowseFragment;
+import com.box.androidsdk.content.models.BoxFolder;
 import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSession;
 
@@ -34,6 +35,10 @@ public class CategoryBrowseActivity extends AppCompatActivity implements BoxBrow
 
     @Override
     public boolean handleOnItemClick(BoxItem item) {
+        BoxSession session = new BoxSession(this, getIntent().getStringExtra(CategoryBrowseFragment.ARG_USER_ID));
+
+        Intent intent = CustomBrowseFileActivity.getLaunchIntent(this, (BoxFolder)item, session);
+        startActivity(intent);
         return false;
     }
 }

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.box.box_preview_sample" >
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,8 +21,7 @@
         <activity
             android:name="com.box.box_preview_sample.CustomBrowseFileActivity"
             android:label="@string/box_browsesdk_title"
-
-            android:theme="@style/BrowseTheme" >
+            android:theme="@style/BrowseAppTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
