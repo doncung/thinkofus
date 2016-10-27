@@ -56,6 +56,7 @@ public abstract class NavigationDrawerActivity extends AppCompatActivity
         return true;
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
