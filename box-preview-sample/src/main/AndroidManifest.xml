@@ -21,7 +21,7 @@
         <activity
             android:name="com.box.box_preview_sample.CustomBrowseFileActivity"
             android:label="@string/box_browsesdk_title"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/BrowseAppTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

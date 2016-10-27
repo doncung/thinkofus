@@ -2,6 +2,7 @@ package com.box.box_preview_sample;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -25,11 +27,18 @@ import android.widget.Toast;
 import com.box.androidsdk.browse.activities.BoxBrowseFileActivity;
 import com.box.androidsdk.browse.fragments.BoxBrowseFolderFragment;
 import com.box.androidsdk.browse.fragments.BoxBrowseFragment;
+import com.box.androidsdk.content.BoxApiFile;
+import com.box.androidsdk.content.BoxFutureTask;
 import com.box.androidsdk.content.auth.BoxAuthentication;
+import com.box.androidsdk.content.models.BoxFile;
 import com.box.androidsdk.content.models.BoxFolder;
 import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSession;
+import com.box.androidsdk.content.requests.BoxRequestBatch;
+import com.box.androidsdk.content.requests.BoxRequestsFile;
+import com.box.androidsdk.content.requests.BoxResponse;
 import com.box.androidsdk.content.utils.SdkUtils;
+import com.box.androidsdk.preview.BoxPreviewActivity;
 import com.box.box_preview_sample.fragments.BigBrowseFolderFragment;
 import com.box.box_preview_sample.fragments.CreatePhotoHelper;
 
@@ -91,7 +100,6 @@ public class CustomBrowseFileActivity extends BoxBrowseFileActivity {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
                 mMediaUri = CreatePhotoHelper.getNewPhotoUri(CustomBrowseFileActivity.this);
-                System.out.println("mMediaUri " + mMediaUri);
                 startActivityForResult(CreatePhotoHelper.getPhotoIntent(mMediaUri), REQUEST_CAMERA);
 
             }
@@ -99,18 +107,30 @@ public class CustomBrowseFileActivity extends BoxBrowseFileActivity {
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        outState.putParcelable("MEDIA_URI", mMediaUri);
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            mMediaUri = savedInstanceState.getParcelable("MEDIA_URI");
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        System.out.println("reqyest " + requestCode + " " + resultCode + " "+ data);
         if (resultCode == Activity.RESULT_OK){
             switch(requestCode){
                 case REQUEST_CAMERA:
                     if (mMediaUri != null) {
                         File file = new File(mMediaUri.getPath());
                         boolean isFile = file.isFile();
+
                         if (!isFile) {
                             // check to see we have an actual file from the camera application.
                             Toast.makeText(this,"No file found", Toast.LENGTH_LONG).show();
@@ -125,7 +145,7 @@ public class CustomBrowseFileActivity extends BoxBrowseFileActivity {
     }
 
 
-    public void uploadWithExternalUri(File file){
+    public void uploadWithExternalUri(final File file){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Upload file?");
         final EditText editText = new EditText(this);
@@ -135,16 +155,41 @@ public class CustomBrowseFileActivity extends BoxBrowseFileActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("editText " + editText.getText());
+                BigBrowseFolderFragment fragment = (BigBrowseFolderFragment)getTopBrowseFragment();
+                uploadWithName(file, editText.getText().toString(), fragment.getFolder().getId());
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("editText cancel " + editText.getText());
+                file.delete();
 
             }
         });
+        builder.create().show();
+
+    }
+
+
+    private void uploadWithName(final File file, String fileName, String folderId){
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setTitle("Uploading...");
+        dialog.setMessage("Please wait...");
+        dialog.show();
+        BoxApiFile mFileApi = new BoxApiFile(mSession);
+        BoxRequestsFile.UploadFile request = mFileApi.getUploadRequest(file, folderId).setFileName(fileName);
+        BoxFutureTask<BoxFile> task = request.toTask();
+        task.addOnCompletedListener(new BoxFutureTask.OnCompletedListener<BoxFile>() {
+            @Override
+            public void onCompleted(BoxResponse<BoxFile> response) {
+                dialog.dismiss();
+                BigBrowseFolderFragment fragment = (BigBrowseFolderFragment)getTopBrowseFragment();
+                getApiExecutor(CustomBrowseFileActivity.this.getApplication()).execute(fragment.fetchInfo());
+                file.delete();
+            }
+        });
+
+        getApiExecutor(this.getApplication()).execute(task);
 
     }
 
@@ -164,6 +209,17 @@ public class CustomBrowseFileActivity extends BoxBrowseFileActivity {
                  return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public boolean handleOnItemClick(BoxItem item) {
+        if (item instanceof BoxFile){
+            BigBrowseFolderFragment fragment = (BigBrowseFolderFragment)getTopBrowseFragment();
+            Intent intent = BoxPreviewActivity.createIntentBuilder(this, mSession, (BoxFile)item).setBoxFolder(fragment.getFolder()).createIntent();
+            startActivity(intent);
+            return false;
+        }
+        return super.handleOnItemClick(item);
     }
 
     @Override
