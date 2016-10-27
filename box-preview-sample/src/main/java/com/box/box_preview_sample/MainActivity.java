@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements BoxAuthentication
     @Override
     public void onAuthCreated(BoxAuthentication.BoxAuthenticationInfo info) {
         if (!mLoadedRoot) {
+            System.out.println("onAuthCreated " + info.toJson());
             loadRootFolder();
         }
     }
